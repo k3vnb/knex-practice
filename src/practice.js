@@ -35,4 +35,31 @@ function searchByProductName(searchTerm){
         })
 }
 
-searchByProductName('holo')
+// searchByProductName('holo')
+
+function paginateProducts(page){
+    const productsPerPage = 10
+    const offset = productsPerPage * (page - 1)
+    knexInstance
+        .select('product_id', 'name', 'price', 'category')
+        .from('amazong_products')
+        .limit(productsPerPage)
+        .offset(offset)
+        .then(result => {
+            console.log(result)
+        })
+}
+
+// paginateProducts(2)
+
+function getProductsWithImages(){
+    knexInstance
+        .select('product_id', 'name', 'price', 'category', 'image')
+        .from('amazong_products')
+        .whereNotNull('image')
+        .then(res => {
+            console.log(res)
+        })
+}
+
+getProductsWithImages()
