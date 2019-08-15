@@ -37,7 +37,7 @@ describe(`Articles service object`, function(){
     afterEach(() => db('blogful_articles').truncate())
     
     context(`Given 'blogful_articles' has data`, () => {
-      before(() => {
+      beforeEach(() => {
           return db
               .into('blogful_articles')
               .insert(testArticles)
@@ -48,6 +48,31 @@ describe(`Articles service object`, function(){
           .then(actual => {
           expect(actual).to.eql(testArticles)
         })
+      })
+
+      it(`getById() resolves an article by id from 'blogful_articles' table`, () => {
+        const thirdId = 3
+        const thirdTestArticle = testArticles[thirdId - 1]
+        return ArticlesService.getById(db, thirdId)
+          .then(actual => {
+            expect(actual).to.eql({
+              id: thirdId,
+              title: thirdTestArticle.title,
+              content: thirdTestArticle.content,
+              date_published: thirdTestArticle.date_published
+            })
+          })
+      })
+
+      it(`deleteArticle() removes an article by id from 'blogful_articles' table`, () => {
+        const articleId = 3
+        return ArticlesService.deleteArticle(db, articleId)
+          .then(() => ArticlesService.getAllArticles(db))
+          .then(allArticles => {
+            // copy test articles array w/o the 'deleted article'
+            const expected = testArticles.filter(article => article.id !== articleId)
+            expect(allArticles).to.eql(expected)
+          })
       })
     })
 
