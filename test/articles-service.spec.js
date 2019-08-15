@@ -61,4 +61,22 @@ describe(`Articles service object`, function(){
       })
       
  
+      it(`insertArticle() inserts a new articles and resolves the new article with an 'id'`, () => {
+        const newArticle = {
+          title: 'Test new title',
+          content: 'Test new content',
+          date_published: new Date('2020-01-22T16:28:32.615Z')
+        }
+        return ArticlesService.insertArticle(db, newArticle)
+          .then(actual => {
+            expect(actual).to.eql({
+              id: 1,
+              title: newArticle.title,
+              content: newArticle.content,
+              date_published: newArticle.date_published,
+            })
+          })
+      })
+
+    
 })
